@@ -44,8 +44,11 @@ build/
 /android/build/
 /android/app/build/
 /android/.gradle/
+/android/.build-env.sh
 local.properties
 .cxx/
+# Vosk model is large binary; fetched by scripts/fetch-vosk-model.sh, not committed.
+/android/app/src/main/assets/model/
 
 # ─── Docker / local DB ─────────────────────────────────────────────────────────
 docker-compose.override.yml
