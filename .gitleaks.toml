@@ -1,0 +1,27 @@
+# Gitleaks configuration for Pocket Assistant.
+# Runs in CI (.github/workflows/security.yml) and locally via pre-commit.
+# Extends the default rule set; add project-specific rules/allowlists below.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Files and patterns that are safe by design"
+paths = [
+  '''\.env\.example$''',
+  '''.*\.md$''',                 # docs use CHANGE_ME / placeholder values only
+  '''backend/tests/fixtures/.*''',
+]
+# Placeholder tokens used throughout example config — never real secrets.
+regexes = [
+  '''CHANGE_ME''',
+  '''OWNER/repo-[ab]''',
+  '''rs@nucboxk8plus''',         # illustrative SSH target in docs, not a secret
+]
+
+# Example of a project-specific rule (kept here as a template):
+# [[rules]]
+# id = "pocket-device-token"
+# description = "Pocket Assistant device token"
+# regex = '''pa_dev_[0-9a-zA-Z]{32,}'''
+# tags = ["device-token"]

@@ -1,0 +1,51 @@
+name: backend-ci
+
+on:
+  push:
+    branches: [main]
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
+  pull_request:
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  lint-type-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies (locked)
+        run: uv sync --frozen --all-extras
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: mypy type check
+        run: uv run mypy src
+
+      - name: Bandit security lint
+        run: uv run bandit -q -r src
+
+      - name: Tests
+        run: uv run pytest -q
+
+      - name: Dependency vulnerability audit
+        run: uv run pip-audit --progress-spinner off || true
+        # `|| true` keeps advisories non-blocking initially; tighten once triaged.

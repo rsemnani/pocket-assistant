@@ -1,0 +1,40 @@
+name: android-ci
+
+# Active from Phase 2 (android/ does not exist yet). Guard skips the job until then.
+on:
+  push:
+    branches: [main]
+    paths: ["android/**", ".github/workflows/android-ci.yml"]
+  pull_request:
+    paths: ["android/**", ".github/workflows/android-ci.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check android module exists
+        id: guard
+        run: |
+          if [ -f android/settings.gradle.kts ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "android module not present yet; skipping."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up JDK
+        if: steps.guard.outputs.present == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Build + unit tests (debug only, no signing secrets)
+        if: steps.guard.outputs.present == 'true'
+        working-directory: android
+        run: ./gradlew assembleDebug testDebugUnitTest --no-daemon

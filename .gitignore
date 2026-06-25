@@ -1,0 +1,66 @@
+# ─── Secrets / env ────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+*.jks
+secrets/
+credentials/
+*token*.json
+service-account*.json
+
+# ─── Media / sensitive runtime data (NEVER commit) ─────────────────────────────
+data/
+media/
+audio/
+transcripts/
+*.wav
+*.mp3
+*.m4a
+*.ics
+exports/
+*.log
+logs/
+
+# ─── Backend (Python) ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# ─── Android ───────────────────────────────────────────────────────────────────
+*.apk
+*.aab
+/android/build/
+/android/app/build/
+/android/.gradle/
+local.properties
+.cxx/
+
+# ─── Docker / local DB ─────────────────────────────────────────────────────────
+docker-compose.override.yml
+pgdata/
+*.sqlite
+*.sqlite3
+*.db
+
+# ─── IDE / OS ──────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ─── Allow sanitized test fixtures (explicit opt-in) ───────────────────────────
+!backend/tests/fixtures/**/*.ics
+!backend/tests/fixtures/**/*.json
