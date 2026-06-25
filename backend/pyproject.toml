@@ -5,7 +5,7 @@ description = "Pocket Assistant backend: FastAPI API, workers, and (mocked) inte
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115,<0.116",
-    "uvicorn[standard]>=0.32,<0.33",
+    "uvicorn[standard]>=0.32,<0.50",
     "pydantic>=2.9,<3",
     "pydantic-settings>=2.6,<3",
     "sqlalchemy>=2.0,<2.1",
