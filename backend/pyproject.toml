@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Pocket Assistant backend: FastAPI API, workers, and (mocked) integrations."
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115,<0.116",
+    "fastapi>=0.115,<0.139",
     "uvicorn[standard]>=0.32,<0.33",
     "pydantic>=2.9,<3",
     "pydantic-settings>=2.6,<3",
