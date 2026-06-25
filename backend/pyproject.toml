@@ -12,7 +12,7 @@ dependencies = [
     "alembic>=1.13,<2",
     "structlog>=24.4,<25",
     "python-multipart>=0.0.12,<0.1",
-    "httpx>=0.27,<0.28",
+    "httpx>=0.27,<0.29",
 ]
 
 [project.optional-dependencies]
