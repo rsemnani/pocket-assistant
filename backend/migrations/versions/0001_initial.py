@@ -15,8 +15,8 @@ from collections.abc import Sequence
 
 from alembic import op
 
-from pocket.db.base import Base
 from pocket.db import models  # noqa: F401  -- register models on metadata
+from pocket.db.base import Base
 
 revision: str = "0001_initial"
 down_revision: str | None = None
