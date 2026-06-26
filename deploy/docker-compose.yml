@@ -24,6 +24,9 @@ services:
   api:
     build:
       context: ../backend
+      args:
+        # Build the Claude CLI into the image so the claude_cli provider works.
+        INSTALL_CLAUDE_CLI: "true"
     restart: unless-stopped
     depends_on:
       db:
@@ -38,6 +41,9 @@ services:
       DEV_SESSION_PIN: ${DEV_SESSION_PIN:?set in deploy/.env}
       LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       LLM_API_KEY: ${LLM_API_KEY:-}
+      # Claude CLI (subscription) provider: token from deploy/.env, never committed.
+      CLAUDE_CLI_PATH: claude
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
       GITHUB_REPO_ALLOWLIST: ${GITHUB_REPO_ALLOWLIST:-}
       CALENDAR_ICS_FEED_URL: ${CALENDAR_ICS_FEED_URL:-}
     volumes:
