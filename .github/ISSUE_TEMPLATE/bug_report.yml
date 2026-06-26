@@ -1,0 +1,42 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the system?
+      options:
+        - android (app)
+        - backend (api/workers)
+        - deploy (docker/tunnel/mini)
+        - llm / integrations
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Describe the bug. What did you see vs. expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. On the phone, ...
+        2. ...
+        3. Observed: ...
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots (optional)
+      description: "Redact anything sensitive — no tokens, transcripts, or real hostnames."
+  - type: input
+    id: scope
+    attributes:
+      label: Suggested scope
+      description: One sentence on the smallest fix you think is needed (optional).

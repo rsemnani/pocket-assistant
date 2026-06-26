@@ -43,6 +43,7 @@ fun PocketAppScreen(vm: CaptureViewModel, micGranted: Boolean, onRequestMic: () 
                 Screen.REVIEW -> ReviewScreen(
                     state = state,
                     onEdit = vm::onEditTranscript,
+                    onFocused = vm::onTranscriptFocused,
                     onSend = vm::send,
                     onCancel = vm::onCancelReview,
                 )

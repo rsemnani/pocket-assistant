@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -102,6 +103,7 @@ fun HomeScreen(
 fun ReviewScreen(
     state: UiState,
     onEdit: (String) -> Unit,
+    onFocused: () -> Unit,
     onSend: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -111,8 +113,11 @@ fun ReviewScreen(
         OutlinedTextField(
             value = state.transcript,
             onValueChange = onEdit,
-            modifier = Modifier.fillMaxWidth().height(220.dp),
-            label = { Text("Editing cancels auto-send") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .onFocusChanged { if (it.isFocused) onFocused() },
+            label = { Text("Tap to edit — cancels auto-send") },
         )
         Spacer(Modifier.height(12.dp))
         if (state.countdown > 0) {

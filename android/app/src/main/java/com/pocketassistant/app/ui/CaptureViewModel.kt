@@ -150,9 +150,18 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun onEditTranscript(text: String) {
+    private fun cancelCountdown() {
         countdownJob?.cancel()
-        _state.update { it.copy(transcript = text, countdown = 0) }
+        countdownJob = null
+        if (_state.value.countdown != 0) _state.update { it.copy(countdown = 0) }
+    }
+
+    /** Called when the transcript field gains focus — starting to edit cancels auto-send. */
+    fun onTranscriptFocused() = cancelCountdown()
+
+    fun onEditTranscript(text: String) {
+        cancelCountdown()
+        _state.update { it.copy(transcript = text) }
     }
 
     fun onCancelReview() {
@@ -177,14 +186,30 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
                 idempotencyKey = UUID.randomUUID().toString(),
             )
             val proposals = svc.interpret(capture.id)
-            _state.update {
-                it.copy(
-                    captureId = capture.id,
-                    intent = proposals.intent,
-                    proposals = proposals.actions,
-                    screen = Screen.PROPOSALS,
-                    countdown = 0,
-                )
+            // A daily-summary request is read-only: fetch, show, and speak it directly
+            // instead of surfacing an approval card.
+            if (proposals.intent == "daily_summary") {
+                val summary = pocket.apiClient.service().dailySummary()
+                _state.update {
+                    it.copy(
+                        captureId = capture.id,
+                        intent = proposals.intent,
+                        summary = summary,
+                        screen = Screen.SUMMARY,
+                        countdown = 0,
+                    )
+                }
+                speak(summary.spokenText)
+            } else {
+                _state.update {
+                    it.copy(
+                        captureId = capture.id,
+                        intent = proposals.intent,
+                        proposals = proposals.actions,
+                        screen = Screen.PROPOSALS,
+                        countdown = 0,
+                    )
+                }
             }
         }
     }

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Design document
+    url: https://github.com/rsemnani/pocket-assistant/blob/main/DESIGN.md
+    about: The full technical design (architecture, phases, security model).

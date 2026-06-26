@@ -1,0 +1,49 @@
+name: Feature request / expansion
+description: Propose a new capability or an expansion of an existing one
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - android (app)
+        - backend (api/workers)
+        - llm / integrations
+        - tasks / reminders
+        - calendar / gmail / github / claude-code
+        - deploy / infra
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What do you want to be able to do?
+      description: Describe the capability from your point of view (a user story is great).
+      placeholder: 'As I use the device, I want to ... so that ...'
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details / acceptance criteria
+      description: How would we know it's done? Any constraints (privacy, approval, hardware)?
+  - type: dropdown
+    id: size
+    attributes:
+      label: Rough size
+      options:
+        - small (a session)
+        - medium (a few sessions)
+        - large (its own phase)
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety touchpoints
+      description: Check any this touches (helps Claude Code apply the right gating).
+      options:
+        - label: Sends data to an external service (LLM/Gmail/Calendar/GitHub)
+        - label: Runs or modifies code (Claude Code automation)
+        - label: Needs new credentials/secrets
+        - label: Changes the approval/PIN model
