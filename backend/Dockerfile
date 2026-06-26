@@ -20,6 +20,24 @@ COPY migrations ./migrations
 COPY alembic.ini ./
 RUN uv sync --extra postgres --no-dev
 
+# Optionally install Node + the Claude CLI for the `claude_cli` LLM provider (subscription
+# auth). Off by default so CI/default builds stay lean; the deploy build sets it to "true".
+ARG INSTALL_CLAUDE_CLI=false
+ARG NODE_VERSION=20.18.1
+RUN if [ "$INSTALL_CLAUDE_CLI" = "true" ]; then \
+      set -eux; \
+      apt-get update; \
+      apt-get install -y --no-install-recommends curl ca-certificates xz-utils; \
+      arch="$(dpkg --print-architecture)"; \
+      case "$arch" in amd64) nodearch=x64 ;; arm64) nodearch=arm64 ;; *) echo "unsupported arch $arch"; exit 1 ;; esac; \
+      curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${nodearch}.tar.xz" -o /tmp/node.tar.xz; \
+      tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1; \
+      rm /tmp/node.tar.xz; \
+      npm install -g @anthropic-ai/claude-code; \
+      claude --version; \
+      apt-get purge -y curl xz-utils; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; \
+    fi
+
 # Drop privileges.
 RUN useradd --create-home --uid 10001 appuser \
     && chown -R appuser:appuser /app
