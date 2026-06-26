@@ -15,6 +15,7 @@ from pocket.db.enums import (
     Sensitivity,
     TaskPriority,
     TaskStatus,
+    TranscriptionSource,
 )
 
 
@@ -42,7 +43,7 @@ class SessionPinResponse(BaseModel):
 class CaptureCreateRequest(BaseModel):
     transcript: str = Field(min_length=1, max_length=10000)
     captured_at: datetime | None = None
-    transcription_source: str = "device"
+    transcription_source: TranscriptionSource = TranscriptionSource.device
 
 
 class TranscriptUpdateRequest(BaseModel):

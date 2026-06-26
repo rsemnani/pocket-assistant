@@ -14,7 +14,7 @@ from fastapi import APIRouter, Header
 from pocket.api.deps import DbDep, DeviceDep, SettingsDep
 from pocket.core.errors import ConflictError, NotFoundError
 from pocket.core.idempotency import request_hash
-from pocket.db.enums import AuditActor, CaptureStatus, TranscriptionSource
+from pocket.db.enums import AuditActor, CaptureStatus
 from pocket.db.models import Capture, IdempotencyRecord, Interpretation, ProposedAction
 from pocket.domain import audit
 from pocket.domain.interpret import interpret_capture
@@ -57,7 +57,7 @@ def create_capture(
         device_id=device.id,
         transcript_raw=body.transcript,
         transcript_edited=body.transcript,
-        transcription_source=TranscriptionSource(body.transcription_source),
+        transcription_source=body.transcription_source,
         status=CaptureStatus.received,
         idempotency_key=idempotency_key,
         captured_at=body.captured_at,
@@ -68,7 +68,7 @@ def create_capture(
         db,
         actor=AuditActor.device,
         event="CAPTURE_RECEIVED",
-        summary=f"source={body.transcription_source} len={len(body.transcript)}",
+        summary=f"source={body.transcription_source.value} len={len(body.transcript)}",
         capture_id=capture.id,
     )
 
