@@ -61,6 +61,16 @@ class CaptureResponse(BaseModel):
     transcript_edited: str | None = None
 
 
+class TranscriptCorrectionResponse(BaseModel):
+    """A capture where the user edited the STT output — a raw↔corrected training pair."""
+
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    captured_at: datetime | None
+    transcript_raw: str | None
+    transcript_edited: str | None
+
+
 # ── Proposals ──────────────────────────────────────────────────────────────────
 class ProposedActionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

@@ -60,6 +60,9 @@ class Settings(BaseSettings):
     llm_api_key: str | None = None
     # Path to the `claude` CLI used by the claude_cli provider (subscription auth).
     claude_cli_path: str = "claude"
+    # IANA timezone used to give the interpreter the current local date/time (relative-date
+    # resolution). Defaults to UTC; set e.g. America/New_York in deploy/.env.
+    assistant_timezone: str = "UTC"
 
     # Integrations
     gmail_provider: Literal["mock", "google"] = "mock"

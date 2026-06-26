@@ -137,6 +137,13 @@ class ClaudeCliLLM:
         parts = [
             _INSTRUCTIONS,
             "",
+        ]
+        if request.now:
+            parts.append(
+                f"Current date/time: {request.now}. Resolve relative dates "
+                "(today, tomorrow, Friday) against this."
+            )
+        parts += [
             f"Email context permitted: {request.allow_email}",
             f"Calendar context permitted: {request.allow_calendar}",
         ]

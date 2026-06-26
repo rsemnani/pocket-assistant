@@ -876,6 +876,7 @@ dependencies = [
     { name = "python-multipart" },
     { name = "sqlalchemy" },
     { name = "structlog" },
+    { name = "tzdata" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -913,6 +914,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8,<0.9" },
     { name = "sqlalchemy", specifier = ">=2.0,<2.1" },
     { name = "structlog", specifier = ">=24.4,<25" },
+    { name = "tzdata", specifier = ">=2024.1" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32,<0.33" },
 ]
 provides-extras = ["postgres", "claude", "dev"]
