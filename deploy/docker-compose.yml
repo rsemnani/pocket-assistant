@@ -43,7 +43,9 @@ services:
     volumes:
       - ${MEDIA_HOST_PATH:-./_media}:/data/media
     ports:
-      - "${API_PORT:-8000}:8000"
+      # Bind to localhost only by default so the API is reachable solely via the
+      # cloudflared tunnel (and the host), never directly on the LAN/public internet.
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8000}:8000"
 
 volumes:
   pgdata:
