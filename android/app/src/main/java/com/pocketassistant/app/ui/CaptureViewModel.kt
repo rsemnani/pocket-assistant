@@ -34,6 +34,9 @@ data class UiState(
     val transcribing: Boolean = false,
     val modelReady: Boolean = false,
     val transcript: String = "",
+    // The original on-device STT output, kept distinct from the (possibly edited) transcript
+    // so the backend can log raw vs edited pairs for improving transcription.
+    val transcriptRaw: String = "",
     val countdown: Int = 0,
     val captureId: String? = null,
     val intent: String? = null,
@@ -123,6 +126,7 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
                 it.copy(
                     transcribing = false,
                     transcript = text,
+                    transcriptRaw = text, // capture the original STT before any edits
                     screen = Screen.REVIEW,
                 )
             }
@@ -167,7 +171,13 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     fun onCancelReview() {
         countdownJob?.cancel()
         _state.update {
-            it.copy(screen = Screen.HOME, transcript = "", countdown = 0, captureId = null)
+            it.copy(
+                screen = Screen.HOME,
+                transcript = "",
+                transcriptRaw = "",
+                countdown = 0,
+                captureId = null,
+            )
         }
     }
 
@@ -179,10 +189,15 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(message = "Nothing to send.") }
             return
         }
+        val rawStt = _state.value.transcriptRaw.trim()
         launchBusy {
             val svc = pocket.apiClient.service()
             val capture = svc.createCapture(
-                CaptureCreateRequest(transcript = transcript),
+                CaptureCreateRequest(
+                    transcript = transcript,
+                    // Send the original STT only when it differs (i.e. the user edited it).
+                    transcriptRaw = rawStt.takeIf { it.isNotEmpty() && it != transcript },
+                ),
                 idempotencyKey = UUID.randomUUID().toString(),
             )
             val proposals = svc.interpret(capture.id)

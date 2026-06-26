@@ -32,6 +32,8 @@ data class SessionPinResponse(
 @Serializable
 data class CaptureCreateRequest(
     val transcript: String,
+    // Original on-device STT output; sent only when the user edited the transcript.
+    @SerialName("transcript_raw") val transcriptRaw: String? = null,
     @SerialName("transcription_source") val transcriptionSource: String = "device",
 )
 
