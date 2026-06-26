@@ -12,17 +12,22 @@ credentials/
 service-account*.json
 
 # ─── Media / sensitive runtime data (NEVER commit) ─────────────────────────────
-data/
-media/
-audio/
-transcripts/
+# NOTE: anchored to runtime locations so they do NOT match source packages that
+# happen to be named data/ audio/ media/ (e.g. Kotlin/Python packages).
+/data/
+/backend/data/
+/deploy/_media/
+/media/
+/audio/
+/transcripts/
+/exports/
+**/exports/
 *.wav
 *.mp3
 *.m4a
 *.ics
-exports/
 *.log
-logs/
+/logs/
 
 # ─── Backend (Python) ──────────────────────────────────────────────────────────
 __pycache__/
