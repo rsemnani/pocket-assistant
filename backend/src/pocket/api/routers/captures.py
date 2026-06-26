@@ -53,9 +53,13 @@ def create_capture(
                 raise ConflictError("Idempotency-Key reused with a different request body")
             return CaptureResponse(**existing.response_json)
 
+    # Preserve the original STT output (transcript_raw) distinctly from the edited/sent text
+    # (transcript_edited). If the client didn't send a raw value, it was unedited.
+    raw = body.transcript_raw if body.transcript_raw is not None else body.transcript
+    edited = raw != body.transcript
     capture = Capture(
         device_id=device.id,
-        transcript_raw=body.transcript,
+        transcript_raw=raw,
         transcript_edited=body.transcript,
         transcription_source=body.transcription_source,
         status=CaptureStatus.received,
@@ -64,11 +68,14 @@ def create_capture(
     )
     db.add(capture)
     db.flush()
+    summary = (
+        f"source={body.transcription_source.value} " f"len={len(body.transcript)} edited={edited}"
+    )
     audit.record(
         db,
         actor=AuditActor.device,
         event="CAPTURE_RECEIVED",
-        summary=f"source={body.transcription_source.value} len={len(body.transcript)}",
+        summary=summary,
         capture_id=capture.id,
     )
 

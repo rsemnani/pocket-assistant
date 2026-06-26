@@ -41,7 +41,11 @@ class SessionPinResponse(BaseModel):
 
 # ── Captures ───────────────────────────────────────────────────────────────────
 class CaptureCreateRequest(BaseModel):
-    transcript: str = Field(min_length=1, max_length=10000)
+    transcript: str = Field(
+        min_length=1, max_length=10000, description="Final/edited text to act on."
+    )
+    # Original on-device STT output, before any user edits. Omit if unedited.
+    transcript_raw: str | None = Field(default=None, max_length=10000)
     captured_at: datetime | None = None
     transcription_source: TranscriptionSource = TranscriptionSource.device
 
