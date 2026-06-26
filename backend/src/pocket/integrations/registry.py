@@ -14,6 +14,14 @@ def get_llm(settings: Settings | None = None) -> base.LLMProvider:
     settings = settings or get_settings()
     if settings.llm_provider == "mock":
         return mock.MockLLM()
+    if settings.llm_provider == "claude_cli":
+        from pocket.integrations.claude_cli import ClaudeCliLLM  # subscription via local CLI
+
+        return ClaudeCliLLM(settings)
+    if settings.llm_provider == "claude":
+        from pocket.integrations.claude import ClaudeLLM  # lazy: optional anthropic dep
+
+        return ClaudeLLM(settings)
     raise NotImplementedError(f"LLM provider '{settings.llm_provider}' not implemented yet")
 
 

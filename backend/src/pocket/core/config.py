@@ -12,7 +12,9 @@ from typing import Literal
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["dev", "staging", "prod"]
-LLMProviderName = Literal["mock", "claude", "openai"]
+# mock = offline; claude_cli = local Claude CLI on the Pro/Max subscription (no API bill);
+# claude = paid Anthropic API; openai = future.
+LLMProviderName = Literal["mock", "claude_cli", "claude", "openai"]
 
 
 class Settings(BaseSettings):
@@ -56,6 +58,8 @@ class Settings(BaseSettings):
     llm_provider: LLMProviderName = "mock"
     llm_model: str | None = None
     llm_api_key: str | None = None
+    # Path to the `claude` CLI used by the claude_cli provider (subscription auth).
+    claude_cli_path: str = "claude"
 
     # Integrations
     gmail_provider: Literal["mock", "google"] = "mock"

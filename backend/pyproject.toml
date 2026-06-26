@@ -17,6 +17,8 @@ dependencies = [
 
 [project.optional-dependencies]
 postgres = ["psycopg[binary]>=3.2,<4"]
+# Real Claude provider. Optional so the app/tests run fully mocked without it.
+claude = ["anthropic>=0.40"]
 dev = [
     "pytest>=8.3,<9",
     "pytest-asyncio>=0.24,<0.25",
@@ -54,6 +56,12 @@ warn_unused_ignores = true
 disallow_untyped_defs = true
 mypy_path = "src"
 packages = ["pocket"]
+
+# anthropic is an optional dep; treat it as untyped so the codebase type-checks
+# whether or not it is installed (the adapter holds the client as Any anyway).
+[[tool.mypy.overrides]]
+module = ["anthropic", "anthropic.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
