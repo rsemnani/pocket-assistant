@@ -15,7 +15,7 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check android module exists
         id: guard
@@ -29,7 +29,7 @@ jobs:
 
       - name: Set up JDK
         if: steps.guard.outputs.present == 'true'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
