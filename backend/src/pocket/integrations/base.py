@@ -15,6 +15,9 @@ class InterpretRequest:
     task_context: list[dict[str, Any]] = field(default_factory=list)
     allow_email: bool = False
     allow_calendar: bool = False
+    # Human-readable current local date/time (e.g. "2026-06-25 14:30 Thursday UTC") so the
+    # model resolves relative dates ("today", "Friday") correctly. None = unknown.
+    now: str | None = None
 
 
 class LLMProvider(Protocol):

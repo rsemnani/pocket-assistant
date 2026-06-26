@@ -142,6 +142,8 @@ class ClaudeLLM:
 
     def _build_user_content(self, request: InterpretRequest) -> str:
         parts = [f"Transcript: {request.transcript.strip()}"]
+        if request.now:
+            parts.append(f"Current date/time: {request.now}. Resolve relative dates against this.")
         parts.append(f"Email context permitted: {request.allow_email}")
         parts.append(f"Calendar context permitted: {request.allow_calendar}")
         if request.task_context:

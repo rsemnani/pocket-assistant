@@ -9,7 +9,7 @@ from __future__ import annotations
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Query
 
 from pocket.api.deps import DbDep, DeviceDep, SettingsDep
 from pocket.core.errors import ConflictError, NotFoundError
@@ -24,6 +24,7 @@ from pocket.schemas.api import (
     CaptureResponse,
     ProposalListResponse,
     ProposedActionResponse,
+    TranscriptCorrectionResponse,
     TranscriptUpdateRequest,
 )
 
@@ -95,6 +96,25 @@ def create_capture(
     return response
 
 
+@router.get("/corrections", response_model=list[TranscriptCorrectionResponse])
+def transcript_corrections(
+    db: DbDep,
+    device: DeviceDep,
+    limit: int = Query(default=500, ge=1, le=5000),
+    offset: int = Query(default=0, ge=0),
+) -> list[Capture]:
+    """Captures the user edited (raw != edited) — training pairs for improving STT."""
+    return (
+        db.query(Capture)
+        .filter(Capture.transcript_raw.isnot(None))
+        .filter(Capture.transcript_raw != Capture.transcript_edited)
+        .order_by(Capture.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+
 def _get_capture(db: DbDep, capture_id: uuid.UUID) -> Capture:
     capture = db.get(Capture, capture_id)
     if capture is None:
@@ -120,7 +140,7 @@ def interpret(
 ) -> ProposalListResponse:
     capture = _get_capture(db, capture_id)
     llm = registry.get_llm(settings)
-    interpretation = interpret_capture(db, capture, llm)
+    interpretation = interpret_capture(db, capture, llm, settings)
     actions = (
         db.query(ProposedAction).filter(ProposedAction.interpretation_id == interpretation.id).all()
     )

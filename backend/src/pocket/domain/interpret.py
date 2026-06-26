@@ -6,13 +6,27 @@ fetched when the command clearly requires it (decided before the model is called
 
 from __future__ import annotations
 
+from datetime import datetime
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
 from sqlalchemy.orm import Session
 
+from pocket.core.config import Settings, get_settings
 from pocket.db.enums import AuditActor, CaptureStatus
 from pocket.db.models import Capture, Interpretation, ProposedAction, Task
 from pocket.domain import audit
 from pocket.domain.policy import sensitivity_for
 from pocket.integrations.base import InterpretRequest, LLMProvider
+
+
+def _current_local_time(settings: Settings) -> str:
+    """Human-readable current local date/time for relative-date resolution."""
+    try:
+        tz = ZoneInfo(settings.assistant_timezone)
+    except (ZoneInfoNotFoundError, ValueError):
+        tz = ZoneInfo("UTC")
+    now = datetime.now(tz)
+    return now.strftime("%Y-%m-%d %H:%M %A %Z")
 
 
 def _needs_email(transcript: str) -> bool:
@@ -25,8 +39,11 @@ def _needs_calendar(transcript: str) -> bool:
     return any(k in t for k in ("calendar", "carve out", "schedule", "my day", "free time"))
 
 
-def interpret_capture(db: Session, capture: Capture, llm: LLMProvider) -> Interpretation:
+def interpret_capture(
+    db: Session, capture: Capture, llm: LLMProvider, settings: Settings | None = None
+) -> Interpretation:
     """Interpret a capture into validated, persisted proposed actions."""
+    settings = settings or get_settings()
     transcript = capture.transcript_edited or capture.transcript_raw or ""
 
     task_context = [
@@ -39,6 +56,7 @@ def interpret_capture(db: Session, capture: Capture, llm: LLMProvider) -> Interp
         task_context=task_context,
         allow_email=_needs_email(transcript),
         allow_calendar=_needs_calendar(transcript),
+        now=_current_local_time(settings),
     )
 
     capture.status = CaptureStatus.interpreting
