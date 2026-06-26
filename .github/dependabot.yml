@@ -1,30 +1,39 @@
 version: 2
 updates:
-  # Backend Python dependencies (uv / pip ecosystem).
+  # Backend Python dependencies — grouped into a single PR to avoid PR sprawl.
   - package-ecosystem: "pip"
     directory: "/backend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     groups:
-      backend-minor-patch:
-        update-types: ["minor", "patch"]
+      backend-deps:
+        patterns: ["*"]
 
-  # GitHub Actions workflow pins.
+  # GitHub Actions — one grouped PR.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      gha:
+        patterns: ["*"]
 
-  # Docker base images.
+  # Docker base images — one grouped PR.
   - package-ecosystem: "docker"
     directory: "/backend"
     schedule:
       interval: "weekly"
+    groups:
+      docker:
+        patterns: ["*"]
 
-  # Android Gradle dependencies (active from Phase 2).
+  # Android Gradle dependencies (active from Phase 2) — one grouped PR.
   - package-ecosystem: "gradle"
     directory: "/android"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
+    groups:
+      android-deps:
+        patterns: ["*"]
