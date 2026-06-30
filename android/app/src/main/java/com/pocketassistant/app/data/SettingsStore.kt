@@ -16,10 +16,16 @@ class SettingsStore(context: Context) {
             ?: BuildConfig.DEFAULT_BACKEND_URL
         set(value) = prefs.edit().putString(KEY_BACKEND_URL, normalize(value)).apply()
 
+    /** yyyy-MM-dd of the last morning summary shown, so it triggers at most once per day. */
+    var lastMorningSummaryDate: String
+        get() = prefs.getString(KEY_LAST_MORNING_SUMMARY, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_LAST_MORNING_SUMMARY, value).apply()
+
     private fun normalize(url: String): String =
         url.trim().removeSuffix("/")
 
     companion object {
         private const val KEY_BACKEND_URL = "backend_url"
+        private const val KEY_LAST_MORNING_SUMMARY = "last_morning_summary_date"
     }
 }

@@ -79,6 +79,9 @@ class Settings(BaseSettings):
     # Daily summary
     morning_summary_start_hour: int = 5
 
+    # Reminder/escalation scan interval (the scheduler worker).
+    scan_interval_seconds: int = 900
+
     # Approval policy
     require_approval_all: bool = True
 

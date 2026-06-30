@@ -48,6 +48,7 @@ data class UiState(
 )
 
 private const val AUTO_SEND_SECONDS = 5
+private const val MORNING_SUMMARY_HOUR = 5
 
 class CaptureViewModel(app: Application) : AndroidViewModel(app) {
     private val pocket = app as PocketApp
@@ -86,6 +87,18 @@ class CaptureViewModel(app: Application) : AndroidViewModel(app) {
             ttsReady = status == TextToSpeech.SUCCESS
             tts?.language = Locale.US
         }
+        maybeShowMorningSummary()
+    }
+
+    /** Proactively show + speak the daily summary on the first app open each morning. */
+    private fun maybeShowMorningSummary() {
+        if (!pocket.secureStore.isPaired) return
+        val cal = java.util.Calendar.getInstance()
+        if (cal.get(java.util.Calendar.HOUR_OF_DAY) < MORNING_SUMMARY_HOUR) return
+        val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
+        if (pocket.settings.lastMorningSummaryDate == today) return
+        pocket.settings.lastMorningSummaryDate = today
+        loadSummary() // fetches, shows, and speaks the summary
     }
 
     // ── Pairing / settings ──────────────────────────────────────────────────────
