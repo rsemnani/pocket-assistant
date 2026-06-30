@@ -65,12 +65,18 @@ class GoogleGmail:
         return results
 
     def _build_service(self) -> Any:
-        from google.auth.transport.requests import Request
-        from google.oauth2.credentials import Credentials
-        from googleapiclient.discovery import build
+        # Import via importlib with Any typing so this type-checks the same whether or not the
+        # optional google packages are installed (the partial stubs otherwise trip strict mypy).
+        import importlib
 
-        creds = Credentials.from_authorized_user_file(self._settings.gmail_token_path, SCOPES)
+        credentials_mod: Any = importlib.import_module("google.oauth2.credentials")
+        requests_mod: Any = importlib.import_module("google.auth.transport.requests")
+        discovery_mod: Any = importlib.import_module("googleapiclient.discovery")
+
+        creds = credentials_mod.Credentials.from_authorized_user_file(
+            self._settings.gmail_token_path, SCOPES
+        )
         if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        self._service = build("gmail", "v1", credentials=creds, cache_discovery=False)
+            creds.refresh(requests_mod.Request())
+        self._service = discovery_mod.build("gmail", "v1", credentials=creds, cache_discovery=False)
         return self._service
