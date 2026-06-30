@@ -20,6 +20,12 @@ dependencies = [
 postgres = ["psycopg[binary]>=3.2,<4"]
 # Real Claude provider. Optional so the app/tests run fully mocked without it.
 claude = ["anthropic>=0.40"]
+# Real Gmail provider (read-only). Optional; mock is the default.
+gmail = [
+    "google-api-python-client>=2.0",
+    "google-auth>=2.0",
+    "google-auth-oauthlib>=1.0",
+]
 dev = [
     "pytest>=8.3,<9",
     "pytest-asyncio>=0.24,<0.25",
@@ -61,7 +67,13 @@ packages = ["pocket"]
 # anthropic is an optional dep; treat it as untyped so the codebase type-checks
 # whether or not it is installed (the adapter holds the client as Any anyway).
 [[tool.mypy.overrides]]
-module = ["anthropic", "anthropic.*"]
+module = [
+    "anthropic",
+    "anthropic.*",
+    "google.*",
+    "googleapiclient.*",
+    "google_auth_oauthlib.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

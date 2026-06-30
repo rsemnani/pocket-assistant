@@ -46,8 +46,12 @@ services:
       CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
       GITHUB_REPO_ALLOWLIST: ${GITHUB_REPO_ALLOWLIST:-}
       CALENDAR_ICS_FEED_URL: ${CALENDAR_ICS_FEED_URL:-}
+      # Gmail read-only provider: token mounted read-only from the host (never committed).
+      GMAIL_PROVIDER: ${GMAIL_PROVIDER:-mock}
+      GMAIL_TOKEN_PATH: /data/gmail/token.json
     volumes:
       - ${MEDIA_HOST_PATH:-./_media}:/data/media
+      - ${GMAIL_HOST_DIR:-./_gmail}:/data/gmail:ro
     ports:
       # Bind to localhost only by default so the API is reachable solely via the
       # cloudflared tunnel (and the host), never directly on the LAN/public internet.
