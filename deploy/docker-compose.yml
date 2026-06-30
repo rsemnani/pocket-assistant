@@ -49,6 +49,8 @@ services:
       # Gmail read-only provider: token mounted read-only from the host (never committed).
       GMAIL_PROVIDER: ${GMAIL_PROVIDER:-mock}
       GMAIL_TOKEN_PATH: /data/gmail/token.json
+      # Local timezone for relative-date resolution in the interpreter (default UTC).
+      ASSISTANT_TIMEZONE: ${ASSISTANT_TIMEZONE:-UTC}
     volumes:
       - ${MEDIA_HOST_PATH:-./_media}:/data/media
       - ${GMAIL_HOST_DIR:-./_gmail}:/data/gmail:ro
