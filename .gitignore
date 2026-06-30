@@ -17,6 +17,10 @@ service-account*.json
 /data/
 /backend/data/
 /deploy/_media/
+/deploy/_gmail/
+# Google OAuth client secrets / tokens (never commit)
+client_secret*.json
+token.json
 /media/
 /audio/
 /transcripts/

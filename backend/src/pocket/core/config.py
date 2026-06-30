@@ -67,6 +67,8 @@ class Settings(BaseSettings):
     # Integrations
     gmail_provider: Literal["mock", "google"] = "mock"
     gmail_default_window_days: int = 1
+    gmail_token_path: str = "/data/gmail/token.json"  # authorized-user token (read-only scope)
+    gmail_max_results: int = 10
     calendar_provider: Literal["mock", "ics_feed"] = "mock"
     calendar_ics_feed_url: str | None = None
     work_hours_start: int = 9

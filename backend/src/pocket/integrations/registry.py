@@ -29,6 +29,10 @@ def get_gmail(settings: Settings | None = None) -> base.GmailProvider:
     settings = settings or get_settings()
     if settings.gmail_provider == "mock":
         return mock.MockGmail()
+    if settings.gmail_provider == "google":
+        from pocket.integrations.gmail import GoogleGmail  # lazy: optional google deps
+
+        return GoogleGmail(settings)
     raise NotImplementedError(f"Gmail provider '{settings.gmail_provider}' not implemented yet")
 
 
